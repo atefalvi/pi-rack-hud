@@ -1,0 +1,15 @@
+[Unit]
+Description=Pi Rack HUD
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 __INSTALL_PATH__/hud.py
+WorkingDirectory=__INSTALL_PATH__
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=__USERNAME__
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
