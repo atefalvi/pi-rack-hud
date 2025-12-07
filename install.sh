@@ -7,11 +7,19 @@ echo ">>> User: $USER"
 echo "==============================================="
 
 # --------------------------------------------------
-# Ensure required system packages exist
+# Ensure required system packages exist FIRST
+# (Minimal OS might not include fontconfig, unzip, git, or pip)
 # --------------------------------------------------
-echo ">>> Installing required system packages (fontconfig, unzip, git, python3-pip)..."
+echo ">>> Installing required system packages..."
 sudo apt update -y
-sudo apt install -y fontconfig unzip git python3-pip
+sudo apt install -y fontconfig unzip git python3-pip python3-venv
+
+# Safety: ensure fc-cache exists
+if ! command -v fc-cache >/dev/null 2>&1; then
+    echo ">>> ERROR: fc-cache still not found after installing fontconfig."
+    echo ">>> Something is wrong with your system packages."
+    exit 1
+fi
 
 # --------------------------------------------------
 # Install Nerd Font (0xProto Nerd Font Mono)
@@ -23,10 +31,12 @@ mkdir -p "$FONT_DIR"
 
 cd /tmp
 wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/0xProto.zip -O 0xProto.zip
+
+echo ">>> Extracting font files..."
 unzip -o 0xProto.zip "*.ttf" -d "$FONT_DIR" > /dev/null
 
 echo ">>> Updating font cache..."
-fc-cache -f -v > /dev/null || echo "Warning: fc-cache failed, but installation will continue."
+fc-cache -f -v || echo ">>> WARNING: fc-cache reported an error but continuing."
 
 echo ">>> Nerd Font installed successfully."
 echo
@@ -52,7 +62,8 @@ fi
 echo
 
 # --------------------------------------------------
-# Install Python Dependencies
+# Install Python dependencies
+# Uses --break-system-packages to bypass Debian's restriction
 # --------------------------------------------------
 echo ">>> Installing Python dependencies..."
 pip3 install --break-system-packages -r "$INSTALL_PATH/requirements.txt"
