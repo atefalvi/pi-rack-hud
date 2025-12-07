@@ -48,7 +48,7 @@ echo
 # Install Python Dependencies
 # --------------------------------------------------
 echo ">>> Installing Python dependencies..."
-pip3 install -r "$INSTALL_PATH/requirements.txt"
+pip3 install --break-system-packages -r "$INSTALL_PATH/requirements.txt"
 echo
 
 # --------------------------------------------------
