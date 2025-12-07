@@ -7,6 +7,13 @@ echo ">>> User: $USER"
 echo "==============================================="
 
 # --------------------------------------------------
+# Ensure required system packages exist
+# --------------------------------------------------
+echo ">>> Installing required system packages (fontconfig, unzip, git, python3-pip)..."
+sudo apt update -y
+sudo apt install -y fontconfig unzip git python3-pip
+
+# --------------------------------------------------
 # Install Nerd Font (0xProto Nerd Font Mono)
 # --------------------------------------------------
 echo ">>> Installing Nerd Font (0xProto Nerd Font Mono)..."
@@ -19,7 +26,7 @@ wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/0xProto
 unzip -o 0xProto.zip "*.ttf" -d "$FONT_DIR" > /dev/null
 
 echo ">>> Updating font cache..."
-fc-cache -f -v > /dev/null
+fc-cache -f -v > /dev/null || echo "Warning: fc-cache failed, but installation will continue."
 
 echo ">>> Nerd Font installed successfully."
 echo
@@ -48,7 +55,7 @@ echo
 # Install Python Dependencies
 # --------------------------------------------------
 echo ">>> Installing Python dependencies..."
-sudo pip3 install --break-system-packages -r "$INSTALL_PATH/requirements.txt"
+pip3 install --break-system-packages -r "$INSTALL_PATH/requirements.txt"
 echo
 
 # --------------------------------------------------
